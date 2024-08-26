@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import PlaceholderContent from "@/components/placeholder/placeholder-content";
+import Content from "./content";
 import { ContentLayout } from "@/components/layout/content-layout";
 import {
   Breadcrumb,
@@ -33,7 +33,7 @@ export default function SendParcelPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <PlaceholderContent />
+      <Content />
     </ContentLayout>
   );
 }
