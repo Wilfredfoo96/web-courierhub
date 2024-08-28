@@ -4,7 +4,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import React from "react";
+import React, { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
@@ -33,37 +33,41 @@ import { useDropdownStore } from "@/lib/store/dropdown";
 
 import { type StateProps } from "@/lib/types";
 
-const StateDropdown = () => {
-  const {
-    countryValue,
-    stateValue,
-    openStateDropdown,
-    setOpenStateDropdown,
-    setStateValue,
-  } = useDropdownStore();
+interface StateDropdownProps {
+  countryValue: string;
+  stateValue: string;
+  onSelect: (state: string) => void;
+}
+
+const StateDropdown = ({
+  countryValue,
+  stateValue,
+  onSelect,
+}: StateDropdownProps) => {
+  const [open, setOpen] = useState(false);
 
   const SD = states as StateProps[];
-  const S = SD.filter(
-    (state) => state.country_name === sentenceCase(countryValue)
-  );
+  const S = SD.filter((state) => state.country_code === countryValue);
 
-  console.log("StateDropdown: countryValue: ", countryValue);
-  console.log("StateDropdown: stateValue: ", stateValue);
 
   return (
-    <Popover open={openStateDropdown} onOpenChange={setOpenStateDropdown}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
-          aria-expanded={openStateDropdown}
+          aria-expanded={open}
           className="w-[300px] cursor-pointer justify-between rounded-[6px] border  disabled:!cursor-not-allowed disabled:!opacity-50"
           disabled={!countryValue || S.length === 0}
         >
           {stateValue ? (
             <div className="flex items-end gap-2">
               <span>
-                {S.find((state) => lowerCase(state.name) === stateValue)?.name}
+                {
+                  S.find(
+                    (state) => lowerCase(state.name) === lowerCase(stateValue)
+                  )?.name
+                }
               </span>
             </div>
           ) : (
@@ -84,12 +88,12 @@ const StateDropdown = () => {
                     key={state.id}
                     value={state.name}
                     onSelect={(currentValue) => {
-                      setStateValue(
-                        currentValue === lowerCase(state.name)
-                          ? currentValue
-                          : ""
-                      );
-                      setOpenStateDropdown(false);
+                      if (lowerCase(currentValue) === lowerCase(state.name)) {
+                        onSelect(state.name);
+                      } else {
+                        onSelect("");
+                      }
+                      setOpen(false);
                     }}
                     className="flex cursor-pointer items-center justify-between text-xs hover:!bg-[#27272a] hover:!text-white"
                   >
@@ -99,7 +103,7 @@ const StateDropdown = () => {
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        stateValue === lowerCase(state.name)
+                        lowerCase(stateValue) === lowerCase(state.name)
                           ? "opacity-100"
                           : "opacity-0"
                       )}

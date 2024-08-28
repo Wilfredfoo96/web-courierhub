@@ -4,7 +4,7 @@
 /*                             External Dependency                            */
 /* -------------------------------------------------------------------------- */
 
-import React from "react";
+import React, { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
@@ -30,29 +30,30 @@ import {
 import { cn, lowerCase } from "@/lib/utils";
 import countries from "@/data/countries.json";
 
-import { useDropdownStore } from "@/lib/store/dropdown";
 import { CountryProps } from "@/lib/types";
 
 interface CountryDropdownProps {
   disabled?: boolean;
+  countryValue: string;
+  onSelect: (country: string) => void;
 }
 
-const CountryDropdown = ({ disabled }: CountryDropdownProps) => {
-  const {
-    countryValue,
-    setCountryValue,
-    openCountryDropdown,
-    setOpenCountryDropdown,
-  } = useDropdownStore();
+const CountryDropdown = ({
+  disabled,
+  countryValue,
+  onSelect,
+}: CountryDropdownProps) => {
   const C = countries as CountryProps[];
 
+  const [open, setOpen] = useState(false);
+
   return (
-    <Popover open={openCountryDropdown} onOpenChange={setOpenCountryDropdown}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
-          aria-expanded={openCountryDropdown}
+          aria-expanded={open}
           className="w-[300px] justify-between rounded-[6px] border"
           disabled={disabled}
         >
@@ -61,16 +62,14 @@ const CountryDropdown = ({ disabled }: CountryDropdownProps) => {
               <div className="flex items-end gap-2">
                 <span>
                   {
-                    countries.find(
-                      (country) => lowerCase(country.name) === countryValue
-                    )?.emoji
+                    countries.find((country) => country.iso2 === countryValue)
+                      ?.emoji
                   }
                 </span>
                 <span>
                   {
-                    countries.find(
-                      (country) => lowerCase(country.name) === countryValue
-                    )?.name
+                    countries.find((country) => country.iso2 === countryValue)
+                      ?.name
                   }
                 </span>
               </div>
@@ -93,13 +92,12 @@ const CountryDropdown = ({ disabled }: CountryDropdownProps) => {
                     key={country.id}
                     value={country.name}
                     onSelect={(currentValue) => {
-                      console.log("currentValue: ", currentValue);
-                      setCountryValue(
-                        currentValue === lowerCase(country.name)
-                          ? currentValue
-                          : ""
-                      );
-                      setOpenCountryDropdown(false);
+                      if (lowerCase(currentValue) === lowerCase(country.name)) {
+                        onSelect(country.iso2);
+                      } else {
+                        onSelect("");
+                      }
+                      setOpen(false);
                     }}
                     className="flex cursor-pointer items-center justify-between text-xs hover:!bg-[#27272a] hover:!text-white"
                   >
@@ -110,7 +108,7 @@ const CountryDropdown = ({ disabled }: CountryDropdownProps) => {
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        countryValue === lowerCase(country.name)
+                        countryValue === country.iso2
                           ? "opacity-100"
                           : "opacity-0"
                       )}
