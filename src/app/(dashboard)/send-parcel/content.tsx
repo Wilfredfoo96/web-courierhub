@@ -2,8 +2,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { defineStepper } from "@stepperize/react";
 import { Step } from "@/components/stepper/step";
-import QuoteForm from "@/components/form/quote-form";
+import QuoteForm from "@/app/(dashboard)/send-parcel/form/quote/form";
 import Image from "next/image";
+import { DataTableDemo } from "./form/quote/data-table";
 
 const Stepper = defineStepper(
   { id: "1", title: "Create Shipment" },
@@ -25,25 +26,28 @@ export default function Content() {
           </div>
         </ol>
 
-        <main className="grid gap-4 md:grid-cols-3 w-full">
+        <main className="h-full w-full">
           {stepper.when(
             "1",
             () => (
-              <>
-                <QuoteForm />
-                <Card className="flex-1 md:col-span-1 h-fit aspect-square">
-                  <CardContent className="flex justify-center items-center w-full h-full p-4">
-                    <Image
-                      priority
-                      src="https://s3.ap-southeast-1.amazonaws.com/scontent.easyparcel.com/pcm/image/general/my-booking-page-ads-image-1442-en.png"
-                      alt="promo"
-                      width={500}
-                      height={500}
-                      className="w-full h-full object-cover"
-                    />
-                  </CardContent>
-                </Card>
-              </>
+              <div className="flex flex-col gap-y-12">
+                <div className="grid gap-4 md:grid-cols-3 w-full">
+                  <QuoteForm />
+                  <Card className="flex-1 md:col-span-1 h-fit aspect-square">
+                    <CardContent className="flex justify-center items-center w-full h-full p-4">
+                      <Image
+                        priority
+                        src="https://s3.ap-southeast-1.amazonaws.com/scontent.easyparcel.com/pcm/image/general/my-booking-page-ads-image-1442-en.png"
+                        alt="promo"
+                        width={500}
+                        height={500}
+                        className="w-full h-full object-cover"
+                      />
+                    </CardContent>
+                  </Card>
+                </div>
+                <DataTableDemo />
+              </div>
             ),
             () => "2"
           )}

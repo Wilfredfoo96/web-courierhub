@@ -43,3 +43,7 @@ export interface StateProps {
   latitude: string;
   longitude: string;
 }
+
+export interface PromoProps {
+  name: string;
+}
