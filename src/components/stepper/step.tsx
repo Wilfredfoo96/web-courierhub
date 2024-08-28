@@ -41,7 +41,7 @@ export function Step({
         isDone && "after:bg-indigo-600"
       )}
     >
-      <div className="block whitespace-nowrap z-10">
+      <div className="block whitespace-nowrap z-[1]">
         <span
           className={cn(
             "size-8 bg-indigo-600 border-2 border-transparent rounded-full flex justify-center items-center mx-auto mb-3 text-sm text-white lg:size-10",

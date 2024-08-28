@@ -8,6 +8,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import Image from "next/image";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +21,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { defineStepper } from "@stepperize/react";
 import { Step } from "@/components/stepper/step";
+import CountryDropdown from "@/components/dropdown/countries-dropdown";
+import StateDropdown from "@/components/dropdown/states-dropdown";
 
 const Stepper = defineStepper(
   { id: "1", title: "Create Shipment" },
@@ -59,101 +62,85 @@ export default function Content() {
             () => "",
           )}
         </Button> */}
-        <main className="grid gap-4 md:grid-cols-2">
-          <Card className="w-full">
+        <main className="grid gap-4 md:grid-cols-3 w-full">
+          <Card className="flex-1 md:col-span-2">
             <CardHeader>
               <CardTitle>Get Instant Quotes</CardTitle>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="domestic">
-                <TabsList>
-                  <TabsTrigger value="domestic">
+              <Tabs defaultValue="domestic" className="flex flex-col gap-4">
+                <TabsList className="w-fit">
+                  <TabsTrigger
+                    value="domestic"
+                    className="flex items-center gap-x-2"
+                  >
                     <TruckIcon className="w-4 h-4" />
                     Domestic
                   </TabsTrigger>
-                  <TabsTrigger value="international">
+                  <TabsTrigger
+                    value="international"
+                    className="flex items-center gap-x-2"
+                  >
                     <PlaneIcon className="w-4 h-4" />
                     International
                   </TabsTrigger>
-                  <TabsTrigger value="on-demand">
+                  <TabsTrigger
+                    value="on-demand"
+                    className="flex items-center gap-x-2"
+                  >
                     <CloudLightningIcon className="w-4 h-4" />
                     On-Demand
                   </TabsTrigger>
                 </TabsList>
-                <TabsContent value="domestic">
-                  <div className="space-y-4">
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                        <Label>FROM:</Label>
-                        <div className="flex items-center space-x-2">
-                          <Select>
-                            <SelectTrigger>
-                              <SelectValue placeholder="MALAYSIA" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="malaysia">MALAYSIA</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <Input placeholder="Sabah" />
-                        </div>
-                      </div>
+                <TabsContent value="domestic" className="flex flex-col gap-4">
+                  {/* FROM */}
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-x-2">
+                      <Label>FROM:</Label>
+                      <CountryDropdown />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <StateDropdown />
                       <Input placeholder="88300" />
                     </div>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                        <Label>TO:</Label>
-                        <div className="flex items-center space-x-2">
-                          <Select>
-                            <SelectTrigger>
-                              <SelectValue placeholder="MALAYSIA" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="malaysia">MALAYSIA</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <Input placeholder="State" />
-                        </div>
-                      </div>
-                      <Input placeholder="Postcode" />
+                  </div>
+                  {/* TO */}
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-x-2">
+                      <Label>TO:</Label>
+                      <CountryDropdown />
                     </div>
-                    <div>
-                      <Label>WEIGHT:</Label>
-                      <div className="flex items-center space-x-2">
-                        <Input placeholder="kg (eg:0.1)" />
-                        <Button variant="outline">
-                          <CalendarIcon className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                    <Button className="w-full bg-pink-500">Quote & Book</Button>
-                    <div className="text-sm text-muted-foreground">
-                      <RocketIcon className="w-4 h-4" />
-                      Send more parcels at a time?{" "}
-                      <a href="#" className="text-pink-500 underline">
-                        View more
-                      </a>
+                    <div className="flex items-center gap-x-2">
+                      <StateDropdown />
+                      <Input placeholder="88300" />
                     </div>
                   </div>
+                  {/* WEIGHT */}
+                  <div className="flex flex-col gap-y-2">
+                    <Label>WEIGHT:</Label>
+                    <div className="flex items-center space-x-2">
+                      <Input placeholder="kg (eg:0.1)" />
+                      <Button variant="outline">
+                        <CalendarIcon className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  <Button className="w-full bg-pink-500" size="lg">
+                    Quote & Book
+                  </Button>
                 </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
-          <Card className="w-full">
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col items-center justify-center p-4 bg-blue-100 rounded">
-                  <h2 className="text-lg font-bold">
-                    Top Up Higher Package at Lower Price
-                  </h2>
-                  <Button className="mt-4 bg-blue-500">Top Up Now</Button>
-                </div>
-                <div className="flex flex-col items-center justify-center p-4 bg-red-100 rounded">
-                  <h2 className="text-lg font-bold">
-                    Top Up Full Packages For FREE Credits
-                  </h2>
-                  <p className="mt-2 text-sm">From 15th - 31st August 2024</p>
-                </div>
-              </div>
+          <Card className="flex-1 md:col-span-1 h-fit aspect-square">
+            <CardContent className="flex justify-center items-center w-full h-full p-4">
+              <Image
+                src="https://s3.ap-southeast-1.amazonaws.com/scontent.easyparcel.com/pcm/image/general/my-booking-page-ads-image-1442-en.png"
+                alt="promo"
+                width={500}
+                height={500}
+                className="w-full h-full object-cover"
+              />
             </CardContent>
           </Card>
         </main>
