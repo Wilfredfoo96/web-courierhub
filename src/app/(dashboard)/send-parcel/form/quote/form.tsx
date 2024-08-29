@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
@@ -16,10 +16,14 @@ import StateDropdown from "@/components/dropdown/states-dropdown";
 import { useSendParcelStore } from "@/lib/store/send-parcel-store";
 import { findPostcode } from "malaysia-postcodes";
 import states from "@/data/states.json";
-import { StateProps } from "@/lib/types";
+import { StateProps } from "@/types/common/state";
 import { lowerCase } from "@/lib/utils";
 
-export default function QuoteForm() {
+interface QuoteFormProps {
+  onQuote: () => void;
+}
+
+export default function QuoteForm({ onQuote }: QuoteFormProps) {
   const SD = states as StateProps[];
 
   const {
@@ -167,7 +171,7 @@ export default function QuoteForm() {
                 </Button>
               </div>
             </div>
-            <Button className="w-full bg-pink-500" size="lg">
+            <Button className="w-full bg-pink-500" size="lg" onClick={onQuote}>
               Quote & Book
             </Button>
           </TabsContent>

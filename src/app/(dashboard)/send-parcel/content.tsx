@@ -5,6 +5,8 @@ import { Step } from "@/components/stepper/step";
 import QuoteForm from "@/app/(dashboard)/send-parcel/form/quote/form";
 import Image from "next/image";
 import { DataTableDemo } from "./form/quote/data-table";
+import { useAction } from "next-safe-action/hooks";
+import { postPosLajuToken } from "@/action/common/post-poslaju-token";
 
 const Stepper = defineStepper(
   { id: "1", title: "Create Shipment" },
@@ -14,6 +16,11 @@ const Stepper = defineStepper(
 
 export default function Content() {
   const stepper = Stepper.useStepper();
+
+  const { execute, result, isPending } = useAction(postPosLajuToken);
+
+  console.log("result", result);
+  console.log("isPending", isPending);
 
   return (
     <Stepper.Scoped>
@@ -32,7 +39,17 @@ export default function Content() {
             () => (
               <div className="flex flex-col gap-y-12">
                 <div className="grid gap-4 md:grid-cols-3 w-full">
-                  <QuoteForm />
+                  <QuoteForm
+                    onQuote={() =>
+                      execute({
+                        clientId: "669776e1f304bd000e90941e",
+                        clientSecret:
+                          "Ju8PuWbsQ6eYiQXJAes7KjSADhLT/kMpfyaNuEtx/0E=",
+                        grantType: "client_credentials",
+                        scope: "as01.gen-connote.all",
+                      })
+                    }
+                  />
                   <Card className="flex-1 md:col-span-1 h-fit aspect-square">
                     <CardContent className="flex justify-center items-center w-full h-full p-4">
                       <Image

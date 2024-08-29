@@ -1,3 +1,11 @@
+interface Timezone {
+  zoneName: string;
+  gmtOffset: number;
+  gmtOffsetName: string;
+  abbreviation: string;
+  tzName: string;
+}
+
 export interface CountryProps {
   id: number;
   name: string;
@@ -22,28 +30,4 @@ export interface CountryProps {
   longitude: string;
   emoji: string;
   emojiU: string;
-}
-
-interface Timezone {
-  zoneName: string;
-  gmtOffset: number;
-  gmtOffsetName: string;
-  abbreviation: string;
-  tzName: string;
-}
-
-export interface StateProps {
-  id: number;
-  name: string;
-  country_id: number;
-  country_code: string;
-  country_name: string;
-  state_code: string;
-  type: string | null;
-  latitude: string;
-  longitude: string;
-}
-
-export interface PromoProps {
-  name: string;
 }
