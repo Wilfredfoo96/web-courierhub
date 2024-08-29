@@ -42,11 +42,11 @@ export default function Content() {
                   <QuoteForm
                     onQuote={() =>
                       execute({
-                        clientId: "669776e1f304bd000e90941e",
+                        clientId: process.env.POSLAJU_GEN_CONNOTE_CLIENT_ID!,
                         clientSecret:
-                          "Ju8PuWbsQ6eYiQXJAes7KjSADhLT/kMpfyaNuEtx/0E=",
-                        grantType: "client_credentials",
-                        scope: "as01.gen-connote.all",
+                          process.env.POSLAJU_GEN_CONNOTE_CLIENT_SECRET!,
+                        grantType: process.env.POSLAJU_GEN_CONNOTE_GRANT_TYPE!,
+                        scope: process.env.POSLAJU_GEN_CONNOTE_SCOPE!,
                       })
                     }
                   />
