@@ -24,8 +24,6 @@ export const useSendParcelStore = create<SendParcelStateProps>((set) => ({
   },
   fromCountry: "",
   setFromCountry: (country: string) => {
-    console.log("country: ", country);
-
     set({ fromCountry: country });
   },
   fromState: "",

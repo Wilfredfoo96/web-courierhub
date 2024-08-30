@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { PoslajuToken } from "@/types/api/poslaju-token";
 import { schema } from "@/types/zod/schema-poslaju-token";
 import { z } from "zod";
+import { addSeconds, formatISO } from "date-fns";
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 100; // 100ms
@@ -41,7 +42,13 @@ async function getValidToken({
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return await response.json();
+    const data = await response.json();
+    // Convert expires_in to expires_date using date-fns
+    return {
+      accessToken: data.access_token,
+      // set expiresDate in 11 hours as suggested from PosLaju doc
+      expiresDate: formatISO(addSeconds(new Date(), data.expires_in - 3600)),
+    };
   } catch (error) {
     console.log("raw error: ", error);
     if (retryCount < MAX_RETRIES) {
@@ -78,7 +85,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        accessToken: data.access_token,
+        accessToken: data.accessToken,
+        expiresDate: data.expiresDate,
       },
       { status: 200 }
     );

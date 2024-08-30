@@ -19,9 +19,6 @@ export default function Content() {
 
   const { execute, result, isPending } = useAction(postPosLajuToken);
 
-  console.log("result", result);
-  console.log("isPending", isPending);
-
   return (
     <Stepper.Scoped>
       <div className="flex flex-col w-full min-h-screen py-6 gap-y-6 md:py-8 md:gap-y-8">
@@ -42,11 +39,22 @@ export default function Content() {
                   <QuoteForm
                     onQuote={() =>
                       execute({
-                        clientId: process.env.POSLAJU_GEN_CONNOTE_CLIENT_ID!,
+                        clientId:
+                          process.env
+                            .NEXT_PUBLIC_POSLAJU_DOMESTIC_BY_POSTCODE_CLIENT_ID ||
+                          "667e4fbaff8384000e89765f",
                         clientSecret:
-                          process.env.POSLAJU_GEN_CONNOTE_CLIENT_SECRET!,
-                        grantType: process.env.POSLAJU_GEN_CONNOTE_GRANT_TYPE!,
-                        scope: process.env.POSLAJU_GEN_CONNOTE_SCOPE!,
+                          process.env
+                            .NEXT_PUBLIC_POSLAJU_DOMESTIC_BY_POSTCODE_CLIENT_SECRET ||
+                          "y76m0uoL5dh//GDWhXlbEaP+Lqy5tsDX1+WMz8Jf9RA=",
+                        grantType:
+                          process.env
+                            .NEXT_PUBLIC_POSLAJU_DOMESTIC_BY_POSTCODE_GRANT_TYPE ||
+                          "client_credentials",
+                        scope:
+                          process.env
+                            .NEXT_PUBLIC_POSLAJU_DOMESTIC_BY_POSTCODE_SCOPE ||
+                          "as2corporate.poslaju-domestic-by-postcode.all",
                       })
                     }
                   />
