@@ -1,23 +1,15 @@
 import PromosDropdown from "@/components/dropdown/promos-dropdown";
 import { Button } from "@/components/ui/button";
-import { ColumnDef } from "@tanstack/react-table";
 import {
-  ArrowUpDown,
-  Check,
-  Clock,
-  Info,
-  MoreHorizontal,
-  PrinterCheck,
-} from "lucide-react";
+  Courier,
+  QuoteResponse,
+  ServiceInfo,
+} from "@/types/api/quote-response";
+import { ColumnDef } from "@tanstack/react-table";
+import { Check, Clock, Info, PrinterCheck } from "lucide-react";
 import Image from "next/image";
-// export type Payment = {
-//   id: string;
-//   amount: number;
-//   status: "pending" | "processing" | "success" | "failed";
-//   email: string;
-// };
 
-export const columns: ColumnDef<any>[] = [
+export const columns: ColumnDef<QuoteResponse>[] = [
   {
     id: "No.",
     header: "No.",
@@ -26,41 +18,56 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "courier",
     header: "Courier",
-    cell: ({ row }) => (
-      <div className="aspect-square size-16">
-        <Image
-          src={row.getValue("courier")}
-          alt="courier"
-          className="w-full h-full object-cover"
-          width={100}
-          height={100}
-        />
-      </div>
-    ),
+    cell: ({ row }) => {
+      const courier: Courier = row.getValue("courier");
+      return (
+        <div className="aspect-square size-16">
+          <Image
+            src={courier.url}
+            alt="courier"
+            className="w-full h-full object-cover"
+            width={100}
+            height={100}
+          />
+        </div>
+      );
+    },
   },
   {
     accessorKey: "serviceInfo",
     header: "Service Info",
-    cell: ({ row }) => (
-      <div className="flex flex-col gap-y-2">
-        <div className="flex gap-x-2">
-          <Check className="size-4" />
-          <span>Pickup from Doorstep</span>
+    cell: ({ row }) => {
+      const serviceInfo: ServiceInfo = row.getValue("serviceInfo");
+
+      return (
+        <div className="flex flex-col gap-y-2">
+          {serviceInfo.pickup && (
+            <div className="flex gap-x-2 items-center">
+              <Check className="size-4" />
+              <span>Pickup from Doorstep</span>
+            </div>
+          )}
+          {serviceInfo.serviceLevelAgreement && (
+            <div className="flex gap-x-2 items-center">
+              <Clock className="size-4" />
+              <span>1 - 3 working days</span>
+            </div>
+          )}
+          {serviceInfo.requirePrint && (
+            <div className="flex gap-x-2 items-center">
+              <PrinterCheck className="size-4" />
+              <span>Yes</span>
+            </div>
+          )}
+          <div className="flex gap-x-2 items-center">
+            <Info className="size-4" />
+            <span className="underline decoration-dotted">
+              More service info
+            </span>
+          </div>
         </div>
-        <div className="flex gap-x-2">
-          <Clock className="size-4" />
-          <span>1 - 3 working days</span>
-        </div>
-        <div className="flex gap-x-2">
-          <PrinterCheck className="size-4" />
-          <span>Yes</span>
-        </div>
-        <div className="flex gap-x-2">
-          <Info className="size-4" />
-          <span className="underline decoration-dotted">More service info</span>
-        </div>
-      </div>
-    ),
+      );
+    },
   },
   {
     accessorKey: "rate",

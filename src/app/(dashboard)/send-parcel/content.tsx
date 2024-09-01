@@ -5,8 +5,11 @@ import { Step } from "@/components/stepper/step";
 import QuoteForm from "@/app/(dashboard)/send-parcel/form/quote/form";
 import Image from "next/image";
 import { DataTableDemo } from "./form/quote/data-table";
-import { useAction } from "next-safe-action/hooks";
-import { postPosLajuToken } from "@/action/common/post-poslaju-token";
+import { useMutation } from "@tanstack/react-query";
+import { getQuote } from "@/lib/api/get-quote";
+import { PoslajuGetQuoteSchema } from "@/types/zod/schema-poslaju-quote";
+import { toast } from "sonner";
+import { ApiError } from "@/lib/errors/api-errors";
 
 const Stepper = defineStepper(
   { id: "1", title: "Create Shipment" },
@@ -17,7 +20,45 @@ const Stepper = defineStepper(
 export default function Content() {
   const stepper = Stepper.useStepper();
 
-  const { execute, result, isPending } = useAction(postPosLajuToken);
+  const {
+    mutateAsync,
+    isPending,
+    data: quoteData,
+  } = useMutation({
+    mutationFn: getQuote,
+  });
+
+  const handleError = (error: unknown) => {
+    if (error instanceof ApiError) {
+      toast.error(error.title, {
+        description: error.message,
+      });
+    } else if (error instanceof Error) {
+      toast.error("Error", {
+        description: error.message,
+      });
+    } else {
+      toast.error("Unexpected Error", {
+        description: "An unexpected error occurred. Please try again.",
+      });
+    }
+  };
+
+  const onQuote = async ({
+    postcodeFrom,
+    postcodeTo,
+    weight,
+  }: PoslajuGetQuoteSchema) => {
+    try {
+      await mutateAsync({
+        postcodeFrom,
+        postcodeTo,
+        weight,
+      });
+    } catch (error) {
+      handleError(error);
+    }
+  };
 
   return (
     <Stepper.Scoped>
@@ -36,28 +77,7 @@ export default function Content() {
             () => (
               <div className="flex flex-col gap-y-12">
                 <div className="grid gap-4 md:grid-cols-3 w-full">
-                  <QuoteForm
-                    onQuote={() =>
-                      execute({
-                        clientId:
-                          process.env
-                            .NEXT_PUBLIC_POSLAJU_DOMESTIC_BY_POSTCODE_CLIENT_ID ||
-                          "667e4fbaff8384000e89765f",
-                        clientSecret:
-                          process.env
-                            .NEXT_PUBLIC_POSLAJU_DOMESTIC_BY_POSTCODE_CLIENT_SECRET ||
-                          "y76m0uoL5dh//GDWhXlbEaP+Lqy5tsDX1+WMz8Jf9RA=",
-                        grantType:
-                          process.env
-                            .NEXT_PUBLIC_POSLAJU_DOMESTIC_BY_POSTCODE_GRANT_TYPE ||
-                          "client_credentials",
-                        scope:
-                          process.env
-                            .NEXT_PUBLIC_POSLAJU_DOMESTIC_BY_POSTCODE_SCOPE ||
-                          "as2corporate.poslaju-domestic-by-postcode.all",
-                      })
-                    }
-                  />
+                  <QuoteForm onQuote={onQuote} isPending={isPending} />
                   <Card className="flex-1 md:col-span-1 h-fit aspect-square">
                     <CardContent className="flex justify-center items-center w-full h-full p-4">
                       <Image
@@ -71,7 +91,7 @@ export default function Content() {
                     </CardContent>
                   </Card>
                 </div>
-                <DataTableDemo />
+                <DataTableDemo data={quoteData || []} />
               </div>
             ),
             () => "2"

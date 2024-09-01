@@ -30,7 +30,7 @@ import {
 import { cn, lowerCase } from "@/lib/utils";
 import countries from "@/data/countries.json";
 
-import { CountryProps } from "@/lib/types";
+import { CountryProps } from "@/types/common/country";
 
 interface CountryDropdownProps {
   disabled?: boolean;

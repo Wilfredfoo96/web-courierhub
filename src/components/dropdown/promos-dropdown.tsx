@@ -30,7 +30,7 @@ import {
 import { cn, lowerCase } from "@/lib/utils";
 import promos from "@/data/promos.json";
 
-import { PromoProps } from "@/lib/types";
+import { PromoProps } from "@/types/send-parcel/promo";
 
 interface PromosDropdownProps {
   disabled?: boolean;

@@ -3,6 +3,8 @@ import { PoslajuToken } from "@/types/api/poslaju-token";
 import { schema } from "@/types/zod/schema-poslaju-token";
 import { z } from "zod";
 import { addSeconds, formatISO } from "date-fns";
+import { createClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 100; // 100ms
@@ -72,26 +74,53 @@ async function getValidToken({
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-
     const parsedInput = schema.parse(body);
 
-    // Get PosLaju token
-    const data = await getValidToken({
+    const supabase = createClient(cookies());
+
+    // Check for existing valid token in Supabase
+    const { data: tokenData, error } = await supabase
+      .from("oauth_tokens")
+      .select("access_token, expires_date")
+      .eq("client_id", parsedInput.clientId)
+      .limit(1)
+      .single();
+
+    if (tokenData && !error) {
+      const currentTime = new Date().getTime();
+      const tokenExpirationTime = new Date(tokenData.expires_date).getTime();
+
+      if (currentTime < tokenExpirationTime) {
+        return NextResponse.json(
+          {
+            accessToken: tokenData.access_token,
+            expiresDate: tokenData.expires_date,
+          },
+          { status: 200 }
+        );
+      }
+    }
+
+    // If no valid token found or token expired, get a new one
+    const newTokenData = await getValidToken({
       clientId: parsedInput.clientId,
       clientSecret: parsedInput.clientSecret,
       scope: parsedInput.scope,
       grantType: parsedInput.grantType,
     });
 
-    return NextResponse.json(
-      {
-        accessToken: data.accessToken,
-        expiresDate: data.expiresDate,
-      },
-      { status: 200 }
-    );
+    // Store the new token in Supabase
+    await supabase
+      .from("oauth_tokens")
+      .update({
+        access_token: newTokenData.accessToken,
+        expires_date: newTokenData.expiresDate,
+      })
+      .eq("client_id", parsedInput.clientId);
+
+    return NextResponse.json(newTokenData, { status: 200 });
   } catch (error) {
-    console.error("Error sending parcel:", error);
+    console.error("Error getting token:", error);
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { message: "Invalid input", errors: error.errors },

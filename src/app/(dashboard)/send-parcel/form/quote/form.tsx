@@ -18,12 +18,14 @@ import { findPostcode } from "malaysia-postcodes";
 import states from "@/data/states.json";
 import { StateProps } from "@/types/common/state";
 import { lowerCase } from "@/lib/utils";
+import { PoslajuGetQuoteSchema } from "@/types/zod/schema-poslaju-quote";
 
 interface QuoteFormProps {
-  onQuote: () => void;
+  isPending: boolean;
+  onQuote: (params: PoslajuGetQuoteSchema) => void;
 }
 
-export default function QuoteForm({ onQuote }: QuoteFormProps) {
+export default function QuoteForm({ onQuote, isPending }: QuoteFormProps) {
   const SD = states as StateProps[];
 
   const {
@@ -85,12 +87,21 @@ export default function QuoteForm({ onQuote }: QuoteFormProps) {
     }
   }, [toCountry, toPostcode]);
 
+  const handleQuote = async () => {
+    onQuote({
+      postcodeFrom: "88200",
+      postcodeTo: "88400",
+      weight: 2.33,
+    });
+  };
+
   return (
     <Card className="flex-1 md:col-span-2">
       <CardHeader>
         <CardTitle>Get Instant Quotes</CardTitle>
       </CardHeader>
       <CardContent>
+        ``
         <Tabs
           defaultValue={deliveryMode}
           className="flex flex-col gap-4"
@@ -171,7 +182,11 @@ export default function QuoteForm({ onQuote }: QuoteFormProps) {
                 </Button>
               </div>
             </div>
-            <Button className="w-full bg-pink-500" size="lg" onClick={onQuote}>
+            <Button
+              className="w-full bg-pink-500"
+              size="lg"
+              onClick={handleQuote}
+            >
               Quote & Book
             </Button>
           </TabsContent>

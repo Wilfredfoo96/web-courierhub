@@ -23,15 +23,20 @@ import {
 import { columns } from "./columns";
 import { mockData } from "./mock-data";
 import { DataTablePagination } from "@/components/table/pagination/data-table-pagination";
+import { QuoteResponse } from "@/types/api/quote-response";
 
-export function DataTableDemo() {
+interface DataTableProps {
+  data: QuoteResponse[];
+}
+
+export function DataTableDemo({ data }: DataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
 
   const table = useReactTable({
-    data: mockData,
+    data,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

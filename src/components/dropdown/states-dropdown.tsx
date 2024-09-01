@@ -27,11 +27,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { cn, lowerCase, sentenceCase } from "@/lib/utils";
+import { cn, lowerCase } from "@/lib/utils";
 import states from "@/data/states.json";
-import { useDropdownStore } from "@/lib/store/dropdown";
 
-import { type StateProps } from "@/lib/types";
+import { StateProps } from "@/types/common/state";
 
 interface StateDropdownProps {
   countryValue: string;
@@ -48,7 +47,6 @@ const StateDropdown = ({
 
   const SD = states as StateProps[];
   const S = SD.filter((state) => state.country_code === countryValue);
-
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

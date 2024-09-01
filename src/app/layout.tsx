@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { ReactQueryClientProvider } from "@/providers/react-query-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,11 +16,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={GeistSans.className}>
-        {children}
-        <TailwindIndicator />
-      </body>
-    </html>
+    <ReactQueryClientProvider>
+      <html lang="en">
+        <body className={GeistSans.className}>
+          {children}
+          <Toaster position="top-right" />
+          <TailwindIndicator />
+        </body>
+      </html>
+    </ReactQueryClientProvider>
   );
 }

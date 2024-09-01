@@ -6,3 +6,5 @@ export const schema = z.object({
   grantType: z.string(),
   scope: z.string(),
 });
+
+export type PoslajuTokenSchema = z.infer<typeof schema>;
